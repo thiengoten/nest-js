@@ -7,22 +7,40 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class BudgetService {
   constructor(private prisma: PrismaService) {}
   create(createBudgetDto: CreateBudgetDto) {
-    return 'This action adds a new budget';
+    return this.prisma.budget.create({
+      data: createBudgetDto,
+    });
   }
 
   findAll() {
     return this.prisma.budget.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} budget`;
+  findOne(id: string) {
+    return this.prisma.budget.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
   }
 
-  update(id: number, updateBudgetDto: UpdateBudgetDto) {
-    return `This action updates a #${id} budget`;
+  update(id: string, updateBudgetDto: UpdateBudgetDto) {
+    return this.prisma.budget.update({
+      where: { id },
+      data: updateBudgetDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} budget`;
+  remove(id: string) {
+    return this.prisma.budget.delete({
+      where: { id },
+    });
   }
 }
